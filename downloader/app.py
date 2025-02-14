@@ -7,13 +7,17 @@ from waitress import serve
 
 app = Flask(__name__)
 
+base_folder = os.path.dirname(os.path.abspath(__file__))
+
 # Define the download folder
 def get_download_folder():
-    base_folder = os.path.dirname(os.path.abspath(__file__))
     download_folder = os.path.join(base_folder, 'downloads')
     if not os.path.exists(download_folder):
         os.makedirs(download_folder)
     return download_folder
+
+def get_cookies_file():
+    return os.path.join(base_folder, 'static/cookies.txt')
 
 # Clean the files periodically
 def clean_downloads_folder():
@@ -31,12 +35,14 @@ def clean_downloads_folder():
             print(f'Erro ao limpar a pasta de downloads: {e}')
 
 # Download the video
-def download_video(url):
+def download_video(url:str):
     download_folder = get_download_folder()
+    cookies_file = get_cookies_file()
     ydl_opts = {
         'outtmpl': os.path.join(download_folder, '%(title)s.%(ext)s'),
         'format': 'best',
-        'quiet': True
+        'quiet': True,
+        'cookiefile': cookies_file
     }
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
