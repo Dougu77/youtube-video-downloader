@@ -3,6 +3,7 @@ import time
 import threading
 from flask import Flask, render_template, request, send_file
 import yt_dlp
+from waitress import serve
 
 app = Flask(__name__)
 
@@ -71,4 +72,4 @@ def download():
 # Main
 if __name__ == '__main__':
     start_cleanup_thread()
-    # app.run(debug=True)
+    serve(app, host='0.0.0.0', port=80)
